@@ -12,11 +12,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class CompressService {
-    private static final String operationSystem = System.getProperty("os.name");
+    private static final String OPERATION_SYSTEM = System.getProperty("os.name");
 
-    public static void compressFiles(List<Path> paths) {
+    public boolean compressFiles(List<Path> paths) {
         Path archivePath;
-        if (operationSystem.startsWith("Windows")) {
+        if (OPERATION_SYSTEM.startsWith("Windows")) {
             archivePath = Paths.get(System.getProperty("user.dir") + "\\archive.zip");
         } else {
             archivePath = Paths.get(System.getProperty("user.dir") + "/archive.zip");
@@ -25,12 +25,14 @@ public class CompressService {
             for (Path p : paths) {
                 addToArchive(zipOutputStream, p);
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    private static void addToArchive(ZipOutputStream zipOutputStream, Path p) throws Exception {
+    private void addToArchive(ZipOutputStream zipOutputStream, Path p) throws Exception {
         if (Files.isDirectory(p)) {
             Directory dir = new Directory(p);
 
@@ -44,7 +46,7 @@ public class CompressService {
         }
     }
 
-    private static void addNewZipEntry(ZipOutputStream zipOutputStream, Path filePath, Path fileName) throws Exception {
+    private void addNewZipEntry(ZipOutputStream zipOutputStream, Path filePath, Path fileName) throws Exception {
         Path fullPath = filePath.resolve(fileName);
         try (InputStream inputStream = Files.newInputStream(fullPath)) {
             ZipEntry entry = new ZipEntry(fileName.toString());
@@ -57,7 +59,7 @@ public class CompressService {
         }
     }
 
-    private static void copyData(InputStream in, OutputStream out) throws Exception {
+    private void copyData(InputStream in, OutputStream out) throws Exception {
         byte[] buffer = new byte[8 * 1024];
         int len;
         while ((len = in.read(buffer)) > 0) {

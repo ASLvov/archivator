@@ -1,10 +1,10 @@
 package app;
 
+import app.service.CompressService;
 import app.utility.ConsoleIO;
 
 import java.io.IOException;
 
-import static app.service.CompressService.compressFiles;
 import static app.utility.InputParser.parseInputString;
 
 public class Application {
@@ -16,9 +16,13 @@ public class Application {
             e.printStackTrace();
         }
         if (!parseInputString(inputString).isEmpty()) {
-            compressFiles(parseInputString(inputString));
+            if (new CompressService().compressFiles(parseInputString(inputString))) {
+                System.out.println("Compressed successfully!");
+            } else {
+                System.out.println("Error! Can't compress");
+            }
         } else {
-            ConsoleIO.write("Error, try again");
+            ConsoleIO.write("Wrong input! Enter full filenames for compression");
         }
     }
 }
