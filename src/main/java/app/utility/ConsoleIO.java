@@ -1,4 +1,4 @@
-package app;
+package app.utility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
