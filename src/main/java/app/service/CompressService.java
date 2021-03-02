@@ -3,7 +3,6 @@ package app.service;
 import app.domain.Directory;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,19 +10,22 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static app.utility.Copier.copyData;
+
 public class CompressService {
     private static final String OPERATION_SYSTEM = System.getProperty("os.name");
+    private static final String CURRENT_DIR = System.getProperty("user.dir");
 
-    public boolean compressFiles(List<Path> paths) {
+    public boolean compressFiles(List<String> paths) {
         Path archivePath;
         if (OPERATION_SYSTEM.startsWith("Windows")) {
-            archivePath = Paths.get(System.getProperty("user.dir") + "\\archive.zip");
+            archivePath = Paths.get(CURRENT_DIR + "\\archive.zip");
         } else {
-            archivePath = Paths.get(System.getProperty("user.dir") + "/archive.zip");
+            archivePath = Paths.get(CURRENT_DIR + "/archive.zip");
         }
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(archivePath))) {
-            for (Path p : paths) {
-                addToArchive(zipOutputStream, p);
+            for (String p : paths) {
+                addToArchive(zipOutputStream, Paths.get(p));
             }
             return true;
         } catch (Exception e) {
@@ -56,14 +58,6 @@ public class CompressService {
             copyData(inputStream, zipOutputStream);
 
             zipOutputStream.closeEntry();
-        }
-    }
-
-    private void copyData(InputStream in, OutputStream out) throws Exception {
-        byte[] buffer = new byte[8 * 1024];
-        int len;
-        while ((len = in.read(buffer)) > 0) {
-            out.write(buffer, 0, len);
         }
     }
 }

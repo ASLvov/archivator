@@ -1,16 +1,14 @@
 package app.utility;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InputParser {
-    public static List<Path> parseInputString(String inputString) {
-        List<Path> paths = new ArrayList<>();
+    public static List<String> parseInputString(String inputString) {
+        List<String> strings = new ArrayList<>();
         for (String s : inputString.split(" ")) {
-            paths.add(Paths.get(s));
+            strings.add(s);
         }
-        return paths;
+        return strings;
     }
 }
